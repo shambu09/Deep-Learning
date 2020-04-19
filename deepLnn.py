@@ -40,7 +40,7 @@ def relu(Z):
     return A, cache
 
 
-def relu_backward(dA, cache):
+def relu_gradient(dA, cache):
     """
     Implement the backward propagation for a single RELU unit.
 
@@ -62,7 +62,7 @@ def relu_backward(dA, cache):
     
     return dZ
 
-def sigmoid_backward(dA, cache):
+def sigmoid_gradient(dA, cache):
     """
     Implement the backward propagation for a single SIGMOID unit.
 
@@ -268,7 +268,7 @@ def compute_cost(AL, Y):
     
     return cost
 
-def linear_backward(dZ, cache):
+def linear_backwardGradient(dZ, cache):
     """
     Implement the linear portion of backward propagation for a single layer (layer l)
 
@@ -311,12 +311,12 @@ def linear_activation_backward(dA, cache, activation):
     linear_cache, activation_cache = cache
     
     if activation == "relu":
-        dZ = relu_backward(dA, activation_cache)
-        dA_prev, dW, db = linear_backward(dZ, linear_cache)
+        dZ = relu_gradient(dA, activation_cache)
+        dA_prev, dW, db = linear_backwardGradient(dZ, linear_cache)
         
     elif activation == "sigmoid":
-        dZ = sigmoid_backward(dA, activation_cache)
-        dA_prev, dW, db = linear_backward(dZ, linear_cache)
+        dZ = sigmoid_gradient(dA, activation_cache)
+        dA_prev, dW, db = linear_backwardGradient(dZ, linear_cache)
     
     return dA_prev, dW, db
 
