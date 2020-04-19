@@ -38,7 +38,6 @@ class NeuralNets:
 
         Arguments:
         X -- data, numpy array of shape (input size, number of examples)
-        parameters -- output of initialize_parameters_deep()
 
         Returns:
         AL -- last post-activation value
@@ -117,10 +116,6 @@ class NeuralNets:
         """
         Update parameters using gradient descent
 
-        Arguments:
-        parameters -- python dictionary containing your parameters 
-        grads -- python dictionary containing your gradients, output of L_model_backward
-
         Returns:
         parameters -- python dictionary containing your updated parameters 
                       parameters["W" + str(l)] = ... 
@@ -143,11 +138,11 @@ class NeuralNets:
         This function is used to predict the results of a  L-layer neural network.
 
         Arguments:
-        X -- data set of examples you would like to label
-        parameters -- parameters of the trained model
+        X -- data set of examples you would like to label.
+        y -- true labelled data.
 
         Returns:
-        p -- predictions for the given dataset X
+        p -- predictions for the given dataset X.
         """
 
         m = X.shape[1]
@@ -178,7 +173,6 @@ class NeuralNets:
         Arguments:
         X -- data, numpy array of shape (num_px * num_px * 3, number of examples)
         Y -- true "label" vector (containing 0 if cat, 1 if non-cat), of shape (1, number of examples)
-        layers_dims -- list containing the input size and each layer size, of length (number of layers + 1).
         learning_rate -- learning rate of the gradient descent update rule
         num_iterations -- number of iterations of the optimization loop
         print_cost -- if True, it prints the cost every 100 steps
