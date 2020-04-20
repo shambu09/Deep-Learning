@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 import h5py
 import deepLnn
 
+
 class NeuralNets:
-    
-    def __init__(self,layer_dims):
+
+    def __init__(self, layer_dims):
         """
         The top level class of this framework.
         Arguments:
@@ -27,14 +28,13 @@ class NeuralNets:
                         Wl -- weight matrix of shape (layer_dims[l], layer_dims[l-1])
                         bl -- bias vector of shape (layer_dims[l], 1)
         """
-        
+
         self.parameters = deepLnn.initialize_parameters_deep(self.layer_dims)
         return self.parameters
-    
 
-    def L_model_forward(self,X):
+    def L_model_forward(self, X):
         """
-        Implement forward propagation for the [LINEAR->RELU]*(L-1)->LINEAR->SIGMOID computation
+        Implementation of forward propagation for the [LINEAR->RELU]*(L-1)->LINEAR->SIGMOID computation
 
         Arguments:
         X -- data, numpy array of shape (input size, number of examples)
@@ -51,14 +51,14 @@ class NeuralNets:
         # number of layers in the neural network
         L = len(self.parameters) // 2
 
-        # Implement [LINEAR -> RELU]*(L-1). Add "cache" to the "caches" list.
+        # Implementation of [LINEAR -> RELU]*(L-1). Add "cache" to the "caches" list.
         for l in range(1, L):
             A_prev = A
             A, cache = deepLnn.linear_activation_forward(
                 A_prev, self.parameters['W' + str(l)], self.parameters['b' + str(l)], activation="relu")
             caches.append(cache)
 
-        # Implement LINEAR -> SIGMOID. Add "cache" to the "caches" list.
+        # Implementation of LINEAR -> SIGMOID. Add "cache" to the "caches" list.
         AL, cache = deepLnn.linear_activation_forward(
             A, self.parameters['W' + str(L)], self.parameters['b' + str(L)], activation="sigmoid")
         caches.append(cache)
@@ -68,9 +68,9 @@ class NeuralNets:
         self.y_hat = AL
         return AL, caches
 
-    def L_model_backward(self,AL, Y, caches):
+    def L_model_backward(self, AL, Y, caches):
         """
-        Implement the backward propagation for the [LINEAR->RELU] * (L-1) -> LINEAR -> SIGMOID group
+        Implementation of the backward propagation for the [LINEAR->RELU] * (L-1) -> LINEAR -> SIGMOID group
 
         Arguments:
         AL -- probability vector, output of the forward propagation (L_model_forward())
@@ -111,8 +111,7 @@ class NeuralNets:
         self.grads = grads
         return grads
 
-
-    def update_parameters(self,learning_rate):
+    def update_parameters(self, learning_rate):
         """
         Update parameters using gradient descent
 
@@ -133,7 +132,7 @@ class NeuralNets:
 
         return self.parameters
 
-    def predict(self,X, y):
+    def predict(self, X, y):
         """
         This function is used to predict the results of a  L-layer neural network.
 
@@ -166,58 +165,58 @@ class NeuralNets:
 
         return p
 
-    def L_layer_model(self,X, Y, learning_rate = 0.0075, num_iterations = 3000, print_cost=False):#lr was 0.009
+    def L_layer_model(self, X, Y, learning_rate=0.0075, num_iterations=3000, print_cost=False):  # lr was 0.009
         """
         Implements a L-layer neural network: [LINEAR->RELU]*(L-1)->LINEAR->SIGMOID.
-        
+
         Arguments:
         X -- data, numpy array of shape (num_px * num_px * 3, number of examples)
         Y -- true "label" vector (containing 0 if cat, 1 if non-cat), of shape (1, number of examples)
         learning_rate -- learning rate of the gradient descent update rule
         num_iterations -- number of iterations of the optimization loop
         print_cost -- if True, it prints the cost every 100 steps
-        
+
         Returns:
         parameters -- parameters learnt by the model. They can then be used to predict.
         """
 
         np.random.seed(1)
         costs = []                         # keep track of cost
-        
+
         # Parameters initialization. (≈ 1 line of code)
         ### START CODE HERE ###
         parameters = self.initializeParameters()
         ### END CODE HERE ###
-        
+
         # Loop (gradient descent)
         for i in range(0, num_iterations):
 
             # Forward propagation: [LINEAR -> RELU]*(L-1) -> LINEAR -> SIGMOID.
-            ### START CODE HERE ### (≈ 1 line of code)
+            # START CODE HERE ### (≈ 1 line of code)
             AL, caches = self.L_model_forward(X)
             ### END CODE HERE ###
-            
+
             # Compute cost.
-            ### START CODE HERE ### (≈ 1 line of code)
+            # START CODE HERE ### (≈ 1 line of code)
             cost = deepLnn.compute_cost(AL, Y)
             ### END CODE HERE ###
-        
+
             # Backward propagation.
-            ### START CODE HERE ### (≈ 1 line of code)
+            # START CODE HERE ### (≈ 1 line of code)
             grads = self.L_model_backward(AL, Y, caches)
             ### END CODE HERE ###
-     
+
             # Update parameters.
-            ### START CODE HERE ### (≈ 1 line of code)
+            # START CODE HERE ### (≈ 1 line of code)
             parameters = self.update_parameters(learning_rate)
             ### END CODE HERE ###
-                    
+
             # Print the cost every 100 training example
             if print_cost and i % 100 == 0:
-                print ("Cost after iteration %i: %f" %(i, cost))
+                print("Cost after iteration %i: %f" % (i, cost))
             if print_cost and i % 100 == 0:
                 costs.append(cost)
-                
+
         # plot the cost
         plt.plot(np.squeeze(costs))
         plt.ylabel('cost')
@@ -233,13 +232,15 @@ if __name__ == "__main__":
     m_train = train_x_orig.shape[0]
     num_px = train_x_orig.shape[1]
     m_test = test_x_orig.shape[0]
-    train_x_flatten = train_x_orig.reshape(train_x_orig.shape[0], -1).T   # The "-1" makes reshape flatten the remaining dimensions
+    # The "-1" makes reshape flatten the remaining dimensions
+    train_x_flatten = train_x_orig.reshape(train_x_orig.shape[0], -1).T
     test_x_flatten = test_x_orig.reshape(test_x_orig.shape[0], -1).T
-    train_x = train_x_flatten/255.
-    test_x = test_x_flatten/255.
-    layers_dims = [12288, 20, 7, 5, 1] #  4-layer model
+    train_x = train_x_flatten / 255.
+    test_x = test_x_flatten / 255.
+    layers_dims = [12288, 20, 7, 5, 1]  # 4-layer model
     layer4Model = NeuralNets(layers_dims)
-    layer4Model.L_layer_model(train_x, train_y, num_iterations = 2500, print_cost = True)
+    layer4Model.L_layer_model(
+        train_x, train_y, num_iterations=3000, print_cost=True)
     print("Training set Accuracy")
     pred_train = layer4Model.predict(train_x, train_y)
     print("Testing set Accuracy")
