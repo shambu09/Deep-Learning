@@ -1,7 +1,9 @@
 import numpy as np
-from HelperFuncs import *
-import deepLnn
 import matplotlib.pyplot as plt
+try:
+    from HelperFuncs import *
+except Exception:
+    from NeuralNetwork.HelperFuncs import *
 
 
 class NeuralNet:
@@ -16,7 +18,7 @@ class NeuralNet:
         self.y_hat = None
         self.grads = {}
         self.Lambda = 0
-        self.hyperInit = 1
+        self.hyperInit = 2
 
     def add_layer(self, n_h):
         """
@@ -24,7 +26,7 @@ class NeuralNet:
         Arguments:
         n_h -- number of nodes for the layer.
         """
-        self.layers.dims.append(n_h)
+        self.layers_dims.append(n_h)
 
     def He_initializeParameters(self):
         """
@@ -40,7 +42,7 @@ class NeuralNet:
         L = len(self.layers_dims)
         for i in range(1, L):
             self.parameters["W" + str(i)] = np.random.randn(
-                self.layers_dims[i], self.layers_dims[i - 1]) * np.sqrt(self.hyperInit / layers_dims[i - 1])
+                self.layers_dims[i], self.layers_dims[i - 1]) * np.sqrt(self.hyperInit / self.layers_dims[i - 1])
             self.parameters["b" + str(i)] = np.zeros((self.layers_dims[i], 1))
 
         return self.parameters
@@ -63,7 +65,7 @@ class NeuralNet:
 
         return self.parameters
 
-    def linear_forward(self,A, W, b):
+    def linear_forward(self, A, W, b):
         """
         Implementation of the linear part of a layer's forward propagation.
 
@@ -84,7 +86,7 @@ class NeuralNet:
 
         return Z, A_W_b
 
-    def linear_activation_forward(self,A_prev, W, b, activation):
+    def linear_activation_forward(self, A_prev, W, b, activation):
         """
         Implementation of the forward propagation for the LINEAR->ACTIVATION layer
 
@@ -149,7 +151,7 @@ class NeuralNet:
         self.y_hat = AL
         return AL, A_W_b__Zs
 
-    def compute_cost(self,AL, Y):
+    def compute_cost(self, AL, Y):
         """
         Implementation of the cost function defined by equation (7).
 
@@ -161,23 +163,23 @@ class NeuralNet:
         cost -- cross-entropy cost
         """
         m = Y.shape[1]
-        regulCost = 0
+        regulCost = 0.0
         if self.Lambda != 0:
-            for i in range(1, len(layers_dims)):
+            for i in range(1, len(self.layers_dims)):
                 regulCost += np.linalg.norm(self.parameters["W" + str(i)])
 
         # Compute loss from aL and y.
-        cost=(1. / m) * (-np.dot(Y, np.log(AL).T) -
-                           np.dot(1 - Y, np.log(1 - AL).T)) + (self.Lambda / (2 * m)) * regulCost
+        cost = (1. / m) * (-np.dot(Y, np.log(AL).T) -
+                           np.dot(1 - Y, np.log(1 - AL).T)) + (float(self.Lambda) / (2 * m)) * regulCost
 
         # To make sure your cost's shape is what we expect (e.g. this turns [[17]]
         # into 17).
-        cost=np.squeeze(cost)
+        cost = np.squeeze(cost)
         assert(cost.shape == ())
 
         return cost
 
-    def linear_backwardGradient(self,dZ, A_W_b):
+    def linear_backwardGradient(self, dZ, A_W_b):
         """
         Implementation of the linear portion of backward propagation for a single layer (layer l)
 
@@ -190,12 +192,12 @@ class NeuralNet:
         dW -- Gradient of the cost with respect to W (current layer l), same shape as W
         db -- Gradient of the cost with respect to b (current layer l), same shape as b
         """
-        A_prev, W, b=A_W_b
-        m=A_prev.shape[1]
+        A_prev, W, b = A_W_b
+        m = A_prev.shape[1]
 
-        dW=1. / m * np.dot(dZ, A_prev.T) + (self.Lambda / 2) * W
-        db=1. / m * np.sum(dZ, axis = 1, keepdims = True)
-        dA_prev=np.dot(W.T, dZ)
+        dW = 1. / m * np.dot(dZ, A_prev.T) + (float(self.Lambda) / m) * W
+        db = 1. / m * np.sum(dZ, axis=1, keepdims=True)
+        dA_prev = np.dot(W.T, dZ)
 
         assert (dA_prev.shape == A_prev.shape)
         assert (dW.shape == W.shape)
@@ -203,7 +205,7 @@ class NeuralNet:
 
         return dA_prev, dW, db
 
-    def linear_activation_backward(self,dA, A_W_b__Z, activation):
+    def linear_activation_backward(self, dA, A_W_b__Z, activation):
         """
         Implementation of the backward propagation for the LINEAR->ACTIVATION layer.
 
@@ -217,15 +219,15 @@ class NeuralNet:
         dW -- Gradient of the cost with respect to W (current layer l), same shape as W
         db -- Gradient of the cost with respect to b (current layer l), same shape as b
         """
-        A_W_b, Z=A_W_b__Z
+        A_W_b, Z = A_W_b__Z
 
         if activation == "relu":
-            dZ=h_reluGradient(dA, Z)
-            dA_prev, dW, db=self.linear_backwardGradient(dZ, A_W_b)
+            dZ = h_reluGradient(dA, Z)
+            dA_prev, dW, db = self.linear_backwardGradient(dZ, A_W_b)
 
         elif activation == "sigmoid":
-            dZ=h_sigmoidGradient(dA, Z)
-            dA_prev, dW, db=self.linear_backwardGradient(dZ, A_W_b)
+            dZ = h_sigmoidGradient(dA, Z)
+            dA_prev, dW, db = self.linear_backwardGradient(dZ, A_W_b)
 
         return dA_prev, dW, db
 
@@ -247,22 +249,22 @@ class NeuralNet:
                  grads["db" + str(l)] = ...
         """
 
-        L=len(A_W_b__Zs)
-        m=AL.shape[1]
-        Y=Y.reshape(AL.shape)
+        L = len(A_W_b__Zs)
+        m = AL.shape[1]
+        Y = Y.reshape(AL.shape)
 
         # initializing the last gradient
         dAL = - (np.divide(Y, AL) - np.divide(1 - Y, 1 - AL))
         # sigmoid->linear
 
-        current_A_W_B_Z=A_W_b__Zs[L-1]
+        current_A_W_B_Z = A_W_b__Zs[L - 1]
         self.grads["dA" + str(L - 1)], self.grads["dW" + str(L)], self.grads["db" + str(
-            L)]=self.linear_activation_backward(dAL, current_A_W_B_Z, activation = "sigmoid")
+            L)] = self.linear_activation_backward(dAL, current_A_W_B_Z, activation="sigmoid")
 
         for i in reversed(range(L - 1)):
             # Relu->Linear gradients
-            current_A_W_B_Z=A_W_b__Zs[i]
-            dA_prev_temp, dW_temp, db_temp=self.linear_activation_backward(
+            current_A_W_B_Z = A_W_b__Zs[i]
+            dA_prev_temp, dW_temp, db_temp = self.linear_activation_backward(
                 self.grads["dA" + str(i + 1)], current_A_W_B_Z, activation="relu")
             self.grads["dA" + str(i)] = dA_prev_temp
             self.grads["dW" + str(i + 1)] = dW_temp
@@ -322,17 +324,17 @@ class NeuralNet:
         # print ("true labels: " + str(y))
         print("Accuracy: " + str(np.sum((p == y) / m)))
 
-    def fit(self,X, Y, learning_rate = 0.0075, num_iterations = 3000,Lambda=0, print_cost=False,init="he"):#lr was 0.009
+    def fit(self, X, Y, learning_rate=0.0075, num_iterations=3000, Lambda=0, print_cost=False, init="he"):  # lr was 0.009
         """
         Implements a L-layer neural network: [LINEAR->RELU]*(L-1)->LINEAR->SIGMOID.
-        
+
         Arguments:
         X -- data, numpy array of shape (num_px * num_px * 3, number of examples)
         Y -- true "label" vector (containing 0 if cat, 1 if non-cat), of shape (1, number of examples)
         learning_rate -- learning rate of the gradient descent update rule
         num_iterations -- number of iterations of the optimization loop
         print_cost -- if True, it prints the cost every 100 steps
-        
+
         Returns:
         parameters -- parameters learnt by the model. They can then be used to predict.
         """
@@ -340,53 +342,35 @@ class NeuralNet:
         np.random.seed(1)
         costs = []                         # keep track of cost
         self.Lambda = Lambda
-        if init=="he":
+        if init == "he":
             self.parameters = self.He_initializeParameters()
         else:
             self.parameters = self.random_initializeParameters()
-        
-        
+
         # Loop (gradient descent)
         for i in range(0, num_iterations):
 
             # Forward propagation: [LINEAR -> RELU]*(L-1) -> LINEAR -> SIGMOID.
             AL, caches = self.forwardProp(X)
-            
+
             # Compute cost.
             cost = self.compute_cost(AL, Y)
-            
+
             # Backward propagation.
             self.grads = self.backwardProp(AL, Y, caches)
-            
+
             # Update parameters.
-            self.parameters = self.update_parameters(learning_rate)     
+            self.parameters = self.update_parameters(learning_rate)
             # Print the cost every 100 training example
             if print_cost and i % 100 == 0:
-                print ("Cost after iteration %i: %f" %(i, cost))
+                print("Cost after iteration %i: %f" % (i, cost))
             if print_cost and i % 100 == 0:
                 costs.append(cost)
-                
-        #plot the cost
+
+        # plot the cost
         plt.plot(np.squeeze(costs))
         plt.ylabel('cost')
         plt.xlabel('iterations (per hundreds)')
         plt.title("Learning rate =" + str(learning_rate))
         plt.show()
-        return self.parameters 
-
-if __name__ == "__main__":
-    train_x_orig, train_y, test_x_orig, test_y, classes = deepLnn.load_data()
-    m_train = train_x_orig.shape[0]
-    num_px = train_x_orig.shape[1]
-    m_test = test_x_orig.shape[0]
-    train_x_flatten = train_x_orig.reshape(train_x_orig.shape[0], -1).T   # The "-1" makes reshape flatten the remaining dimensions
-    test_x_flatten = test_x_orig.reshape(test_x_orig.shape[0], -1).T
-    train_x = train_x_flatten/255.
-    test_x = test_x_flatten/255.
-    layers_dims = [12288, 20, 7, 5, 1] #  4-layer model
-    layer4Model = NeuralNet(layers_dims)
-    layer4Model.fit(train_x, train_y, num_iterations = 3000,Lambda=0.02, print_cost=True,init="he")
-    print("Training set Accuracy")
-    pred_train = layer4Model.predict(train_x, train_y)
-    print("Testing set Accuracy")
-    pred_test = layer4Model.predict(test_x, test_y)
+        return self.parameters
