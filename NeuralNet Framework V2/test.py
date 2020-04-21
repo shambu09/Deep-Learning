@@ -17,11 +17,11 @@ train_x = train_x_flatten / 255.
 test_x = test_x_flatten / 255.
 
 
-layers_dims = [12288, 20, 7, 7, 2, 1]  # 4-layer model
+layers_dims = [12288, 20, 10, 5, 5, 5, 1]  # 4-layer model
 layer4Model = NeuralNet.NeuralNet(layers_dims)
 layer4Model.hyperInit = 1
-layer4Model.fit(train_x, train_y, num_iterations=6000,
-                Lambda=3.0, print_cost=True, init="he",)
+layer4Model.fit(train_x, train_y, num_iterations=4000, learning_rate=0.005,
+                Lambda=1.0, print_cost=True, init="he")
 
 
 print("Training set Accuracy")
@@ -32,22 +32,22 @@ pred_test = layer4Model.predict(test_x, test_y)
 
 """
 {                                       {
-#3000                                   #3000
+# 3000                                   #3000
 lambda = 0.1 init= "he"                 lambda = 0.1 , init="random"
 Training set Accuracy                   Training set Accuracy
 Accuracy: 0.8468899521531099            Accuracy: 0.6555023923444976
 Testing set Accuracy                    Testing set Accuracy
-Accuracy: 0.5800000000000001            Accuracy: 0.3400000000000001   
+Accuracy: 0.5800000000000001            Accuracy: 0.3400000000000001
 }                                       }
 
 
 
 {                                       {
-#3100                                   #6000
+# 3100                                   #6000
 lambda = 0.4 init= "he"                 lambda = 0.6 , init="he"
 Training set Accuracy                   Training set Accuracy
 Accuracy: 0.985645                      Accuracy: 0.990430
 Testing set Accuracy                    Testing set Accuracy
-Accuracy: 0.84                          Accuracy: 0.86  
+Accuracy: 0.84                          Accuracy: 0.86
 }                                       }
 """

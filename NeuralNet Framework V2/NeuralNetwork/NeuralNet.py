@@ -163,14 +163,15 @@ class NeuralNet:
         cost -- cross-entropy cost
         """
         m = Y.shape[1]
+        self.m = m
         regulCost = 0.0
         if self.Lambda != 0:
             for i in range(1, len(self.layers_dims)):
-                regulCost += np.linalg.norm(self.parameters["W" + str(i)])
+                regulCost += np.sum(np.square(self.parameters["W" + str(i)]))
 
         # Compute loss from aL and y.
         cost = (1. / m) * (-np.dot(Y, np.log(AL).T) -
-                           np.dot(1 - Y, np.log(1 - AL).T)) + (float(self.Lambda) / (2 * m)) * regulCost
+                           np.dot(1 - Y, np.log(1 - AL).T)) + (float(self.Lambda) / (2 * self.m)) * regulCost
 
         # To make sure your cost's shape is what we expect (e.g. this turns [[17]]
         # into 17).
@@ -195,7 +196,7 @@ class NeuralNet:
         A_prev, W, b = A_W_b
         m = A_prev.shape[1]
 
-        dW = 1. / m * np.dot(dZ, A_prev.T) + (float(self.Lambda) / m) * W
+        dW = 1. / m * np.dot(dZ, A_prev.T) + (float(self.Lambda) / self.m) * W
         db = 1. / m * np.sum(dZ, axis=1, keepdims=True)
         dA_prev = np.dot(W.T, dZ)
 
@@ -293,7 +294,7 @@ class NeuralNet:
 
         return self.parameters
 
-    def predict(self, X, y):
+    def predict(self, X, y, show=False):
         """
         This function is used to predict the results of a L-layer neural network.
 
@@ -320,8 +321,9 @@ class NeuralNet:
                 p[0, i] = 0
 
         # print results
-        # print ("predictions: " + str(p))
-        # print ("true labels: " + str(y))
+        if(show):
+            print("predictions: " + str(p))
+            print("true labels: " + str(y))
         print("Accuracy: " + str(np.sum((p == y) / m)))
 
     def fit(self, X, Y, learning_rate=0.0075, num_iterations=3000, Lambda=0, print_cost=False, init="he"):  # lr was 0.009
