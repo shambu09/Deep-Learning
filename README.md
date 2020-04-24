@@ -11,7 +11,7 @@ Implemented Algorithms:
 
         Binary Cross entropy loss, Regularization.
 
-        Backword Propagation.
+        Backward Propagation.
         
         Gradient Descent.
 
