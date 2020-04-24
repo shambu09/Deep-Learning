@@ -3,7 +3,7 @@ from pathlib import Path
 path = Path.cwd()
 sys.path.append(str(path.parent))
 import numpy as np
-from NeuralNetwork import NeuralNet
+from NeuNet.NeuralNetwork import NeuralNet
 
 
 train_x = np.array([np.array([0, 1]), np.array([1, 0]),

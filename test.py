@@ -1,4 +1,4 @@
-from NeuralNetwork import NeuralNet, HelperFuncs
+from NeuNet.NeuralNetwork import NeuralNet, HelperFuncs
 import pathlib
 
 

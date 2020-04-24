@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 try:
     from HelperFuncs import *
 except Exception:
-    from NeuralNetwork.HelperFuncs import *
+    from NeuNet.NeuralNetwork.HelperFuncs import *
 
 
 class NeuralNet:
