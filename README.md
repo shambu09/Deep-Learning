@@ -7,7 +7,7 @@ Implemented Algorithms:
 
     Deep L ANN:
 
-        Forward Propagation using he/Xavier/random initialization, Normalization.
+        Forward Propagation using he, Xavier, random initialization; Normalization.
 
         Binary Cross entropy loss, Regularization.
 
