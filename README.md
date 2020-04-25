@@ -1,5 +1,6 @@
 # Deep-Learning
-Implementation of Deep Learning algorithms into a simple Python framework.
+
+Implementation of Deep Learning algorithms into a simple Python framework using only NumPy.
 
 New algorithms will be implemented when I get a good grasp on those algorithms.
 
@@ -12,6 +13,5 @@ Implemented Algorithms:
         Binary Cross entropy loss, Regularization.
 
         Backward Propagation.
-        
-        Gradient Descent.
 
+        Gradient Descent.
